@@ -1,0 +1,25 @@
+#checkbox_area {
+    width: 80vw;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    accent-color: rgb(0, 255, 0);
+    border: 2px solid gray;
+    border-radius: 4px;
+}
+
+#custom_checkbox {
+    width: 8vh;
+    height: 8vh;
+}
+
+#delete_button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: red;
+}

@@ -1,34 +1,42 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import CheckboxCustom from './components/CheckboxCustom'
+import "./components/AddTask.css"
 
 function App() {
   const [count, setCount] = useState(0)
+  const [checkboxes, setCheckboxes] = useState([]);
+  const [taskText, setTaskText] = useState("");
+
+  const addCheckbox = () => {
+    if (taskText.trim() === "") return; // prevent empty tasks
+    setCheckboxes([...checkboxes, { id: checkboxes.length, text: taskText }]);
+    setTaskText(""); // clear input after adding
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <div id="title">
+        <h1>To-Do List</h1>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div id="header_area">
+        <input 
+          placeholder="input item" 
+          value={taskText} 
+          onChange={(e) => setTaskText(e.target.value)} 
+        />
+        <button onClick={addCheckbox} id="add_task_button">Add task +</button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+
+     <div>
+        <hr style={{ width: "80vw" }} />
+        {checkboxes.map((checkbox) => (
+          <CheckboxCustom key={checkbox.id} text={checkbox.text} />
+        ))}
+      </div>
+    </div>
   )
 }
 
