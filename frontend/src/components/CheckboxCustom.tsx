@@ -23,7 +23,7 @@ const CheckboxCustom = ({text, onDelete, taskId,completed}:CheckboxProps) => {
     }
     
   return (
-    <div id="task_area">
+    <li id="task_area">
       <span>{text}</span> {/* display the passed text */}
       <div>
         <button id="delete_button" onClick={onDelete}>
@@ -34,7 +34,7 @@ const CheckboxCustom = ({text, onDelete, taskId,completed}:CheckboxProps) => {
         </button>
         <input id="custom_checkbox" type="checkbox" checked={isChecked} onChange={handleCheckboxChange} name="myCheckbox"/>
       </div>
-    </div>
+    </li>
   );
 };
 

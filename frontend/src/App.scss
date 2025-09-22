@@ -4,9 +4,22 @@
   align-items: center;
   margin-bottom: 2rem;
 
+  & > input {
+    height: 2.5rem;
+    padding: 0 1rem;
+    background-color: #f3f3f3;
+    border-radius: 0.25rem 0 0 0.25rem;
+    width: 100%;
+  }
 }
 
 #title {
   width: 100%;
   text-align: center;
+}
+
+#task_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }

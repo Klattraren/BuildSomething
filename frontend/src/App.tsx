@@ -10,7 +10,6 @@ type TaskType = {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
   const [checkboxes, setCheckboxes] = useState<TaskType[]>([]);
   const [taskText, setTaskText] = useState("");
 
@@ -31,7 +30,7 @@ function App() {
   const addCheckbox = async () => {
     if (taskText.trim() === "") return; // prevent empty tasks
     const data = await postTask(taskText);
-    setCheckboxes([...checkboxes, { id: data.id, task: taskText, completed: true}]);
+    setCheckboxes([...checkboxes, { id: data.id, task: taskText, completed: false}]);
     setTaskText(""); // clear input after adding
     console.log(`Added task: ${taskText}, with id: ${data.id}`);
   };
@@ -76,7 +75,7 @@ function App() {
 
       <div id="header_area">
         <input
-          placeholder="input item" 
+          placeholder="Input task" 
           value={taskText} 
           onChange={(e) => setTaskText(e.target.value)} 
         />
@@ -87,6 +86,7 @@ function App() {
      
       <div>
         <hr style={{ width: "80vw" }} />
+        <ul id="task_list">
         {checkboxes.map((checkbox) => (
           <CheckboxCustom 
             key={checkbox.id} 
@@ -96,6 +96,7 @@ function App() {
             onDelete={() => deleteCheckbox(checkbox.id)} // pass delete function
           />
         ))}
+        </ul>
       </div>
     </div>
   )
