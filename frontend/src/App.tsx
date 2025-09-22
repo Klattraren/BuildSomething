@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import './App.scss'
 import CheckboxCustom from './components/CheckboxCustom'
-import "./components/AddTask.css"
+import "./components/AddTask.scss"
+
+type TaskType = {
+  id: number;
+  task: string;
+  completed: boolean;
+}
 
 function App() {
   const [count, setCount] = useState(0)
-  const [checkboxes, setCheckboxes] = useState([]);
+  const [checkboxes, setCheckboxes] = useState<TaskType[]>([]);
   const [taskText, setTaskText] = useState("");
 
-   const postTask = async (newTask) => {
+   const postTask = async (newTask:string) => {
     const response = await fetch(`http://localhost:5000/todos`, {
         method: "POST",
         headers: {
@@ -22,19 +28,16 @@ function App() {
   }
 
 
-
   const addCheckbox = async () => {
     if (taskText.trim() === "") return; // prevent empty tasks
     const data = await postTask(taskText);
-    setCheckboxes([...checkboxes, { id: data.id, text: taskText, created: true}]);
+    setCheckboxes([...checkboxes, { id: data.id, task: taskText, completed: true}]);
     setTaskText(""); // clear input after adding
     console.log(`Added task: ${taskText}, with id: ${data.id}`);
   };
 
 
-
-
-  const deleteCheckbox = async (todoId) => {
+  const deleteCheckbox = async (todoId:number) => {
     setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== todoId));
     console.log("Deleted checkbox with id:", todoId);
 
@@ -53,14 +56,9 @@ function App() {
 
   const getAllTasksOnLoad = async () => {
     const response = await fetch(`http://localhost:5000/todos`);
-    const data = await response.json();
+    const data:TaskType[] = await response.json();
     console.log("Fetched tasks on load:", data);
-    // set all at once, not in a loop
-    setCheckboxes(data.map(item => ({
-      id: item.id,
-      text: item.task,
-      created: true
-    })));
+    setCheckboxes(data);
   };
 
   useEffect(() => {
@@ -77,7 +75,7 @@ function App() {
       </div>
 
       <div id="header_area">
-        <input 
+        <input
           placeholder="input item" 
           value={taskText} 
           onChange={(e) => setTaskText(e.target.value)} 
@@ -92,7 +90,9 @@ function App() {
         {checkboxes.map((checkbox) => (
           <CheckboxCustom 
             key={checkbox.id} 
-            text={checkbox.text} 
+            text={checkbox.task}
+            taskId={checkbox.id} 
+            completed={checkbox.completed}
             onDelete={() => deleteCheckbox(checkbox.id)} // pass delete function
           />
         ))}

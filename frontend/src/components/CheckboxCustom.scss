@@ -1,4 +1,4 @@
-#checkbox_area {
+#task_area {
     width: 80vw;
     height: 10vh;
     display: flex;
@@ -8,6 +8,12 @@
     accent-color: rgb(0, 255, 0);
     border: 2px solid gray;
     border-radius: 4px;
+
+    & > div {
+        display:flex;
+        align-items: center;
+        gap: 1rem;
+    }
 }
 
 #custom_checkbox {

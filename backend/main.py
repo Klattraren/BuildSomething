@@ -13,48 +13,50 @@ try:
         password="postgres",
         port=5432
     )
-    print("✅ Connected to Postgres!")
+    print("onnected to Postgres!")
 except Exception as e:
-    print("❌ Connection failed:", e)
+    print("Connection failed:", e)
 
 @app.post('/todos')
 def add_todo():
     todo_data = request.get_json()
-    cur = conn.cursor()
-    print("Received todo data:", todo_data)
-    cur.execute("INSERT INTO todos (task, completed) VALUES (%s, %s) RETURNING id;", (todo_data, False))
-    new_id = cur.fetchone()[0]
-    conn.commit()
-    cur.close()
+    with conn.cursor() as cur:
+        print("Received todo data:", todo_data)
+        cur.execute("INSERT INTO todos (task, completed) VALUES (%s, %s) RETURNING id;", (todo_data, False))
+        new_id = cur.fetchone()[0]
+        conn.commit()
     print("Inserted new todo with ID:", new_id)
-    return jsonify({"id": new_id}), 201
+    return jsonify({"id": new_id}), 200
 
 @app.get('/todos')
 def get_tasks():
     # Placeholder for fetching todos from the database
-    cur = conn.cursor()
-    cur.execute("SELECT id, task, completed FROM todos;")
-    rows = cur.fetchall()
-    cur.close()
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, task, completed FROM todos;")
+        rows = cur.fetchall()
+    
     response = [{"id": row[0], "task": row[1], "completed": row[2]} for row in rows]
-    return jsonify(response)
+    return jsonify(response),200
 
 
-# @app.patch('/todos/<int:todo_id>')
-# def update_todo(todo_id,state):
-#     # Placeholder for updating a todo in the database
-#     updated_todo = {"id": todo_id, "task": "Updated Task", "completed": state}
-#     return jsonify(updated_todo)
+@app.patch('/todos/<int:todo_id>')
+def update_todo(todo_id:int):
+    body =  request.get_json()
+    print("BODY: ",body.get("completed"))
+    state = body.get("completed")
+    with conn.cursor() as cur:
+        cur.execute(f"UPDATE todos SET completed={state} WHERE id={todo_id};")
+        conn.commit()
+    return jsonify({"success":True}),200
 
 @app.delete('/todos/<int:todo_id>')
 def delete_todo(todo_id):
     # Placeholder for deleting a todo from the database
     print(f"Deleting todo with ID: {todo_id}")
-    cur = conn.cursor()
-    cur.execute("DELETE FROM todos WHERE id = %s", (todo_id,))
-    conn.commit()
-    cur.close()
-    return '', 204
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM todos WHERE id = %s", (todo_id,))
+        conn.commit()
+    return '', 200
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
