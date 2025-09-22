@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import CheckboxCustom from './components/CheckboxCustom'
 import "./components/AddTask.css"
@@ -22,16 +22,27 @@ function App() {
 
   const addCheckbox = () => {
     if (taskText.trim() === "") return; // prevent empty tasks
-    setCheckboxes([...checkboxes, { id: checkboxes.length, text: taskText, created: true}]);
+    const new_id = postTask(taskText);
+    setCheckboxes([...checkboxes, { id: new_id, text: taskText, created: true}]);
     setTaskText(""); // clear input after adding
     console.log("Added task:", taskText);
-    postTask(taskText);
+    console.log("Assigned id:", id);
   };
 
   const deleteCheckbox = (id) => {
     setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id));
     console.log("Deleted checkbox with id:", id);
   };
+
+  const getAllTasksOnLoad = async () => {
+    const response = await fetch(`http://localhost:5000/todos`);
+    const data = await response.json();
+    console.log(data);
+  }
+
+  useEffect(() => {
+    getAllTasksOnLoad();
+  }, []);
 
   return (
     <div>

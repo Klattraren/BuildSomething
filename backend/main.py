@@ -17,16 +17,6 @@ try:
 except Exception as e:
     print("❌ Connection failed:", e)
 
-# @app.get('/todos')
-# def get_todos():
-#     # Placeholder for fetching todos from the database
-#     todos = [
-#         {"id": 1, "task": "Sample Task 1", "completed": False},
-#         {"id": 2, "task": "Sample Task 2", "completed": True}
-#     ]
-#     response = "fetched tasks from database: " + str(todos)
-#     return jsonify(response)
-
 @app.post('/todos')
 def add_todo():
     todo_data = request.get_json()
@@ -35,7 +25,18 @@ def add_todo():
     new_id = cur.fetchone()[0]
     conn.commit()
     cur.close()
-    return jsonify("added task to database: " + str(new_id))
+    return jsonify(new_id), 201
+
+@app.get('/todos')
+def get_tasks():
+    # Placeholder for fetching todos from the database
+    cur = conn.cursor()
+    cur.execute("SELECT id, task, completed FROM todos;")
+    rows = cur.fetchall()
+    cur.close()
+    response = [{"id": row[0], "task": row[1], "completed": row[2]} for row in rows]
+    return jsonify(response)
+
 
 # @app.patch('/todos/<int:todo_id>')
 # def update_todo(todo_id,state):
