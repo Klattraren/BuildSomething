@@ -5,13 +5,17 @@ import psycopg2
 app = Flask(__name__)
 CORS(app)
 
-conn = psycopg2.connect(
-    host="localhost",     
-    database="default",
-    user="postgres",
-    password="postgres",
-    port=5432
-)
+try:
+    conn = psycopg2.connect(
+        host="localhost",     # or "postgres" if Flask is in Docker
+        database="default",
+        user="postgres",
+        password="postgres",
+        port=5432
+    )
+    print("✅ Connected to Postgres!")
+except Exception as e:
+    print("❌ Connection failed:", e)
 
 # @app.get('/todos')
 # def get_todos():
@@ -26,12 +30,12 @@ conn = psycopg2.connect(
 @app.post('/todos')
 def add_todo():
     todo_data = request.get_json()
-    response = "added task to database: " + str(todo_data)
-    # cur = conn.cursor()
-    # cur.execute("INSERT INTO todos (task, completed) VALUES (%s, %s)", (todo_data['task'], todo_data['completed']))
-    # conn.commit()
-    # cur.close()
-    return jsonify(response)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO todos (task, completed) VALUES (%s, %s) RETURNING id;", (todo_data, False))
+    new_id = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    return jsonify("added task to database: " + str(new_id))
 
 # @app.patch('/todos/<int:todo_id>')
 # def update_todo(todo_id,state):
