@@ -5,20 +5,23 @@ import psycopg2
 app = Flask(__name__)
 CORS(app)
 
+conn = None
 try:
     conn = psycopg2.connect(
-        host="localhost",     # or "postgres" if Flask is in Docker
+        host="postgres",  # changed from localhost to postgres (service/container name)
         database="default",
         user="postgres",
         password="postgres",
         port=5432
     )
-    print("onnected to Postgres!")
+    print("Connected to Postgres!")
 except Exception as e:
     print("Connection failed:", e)
 
 @app.post('/todos')
 def add_todo():
+    if conn is None:
+        return jsonify({"error": "Database connection not available"}), 500
     todo_data = request.get_json()
     with conn.cursor() as cur:
         print("Received todo data:", todo_data)
@@ -30,7 +33,8 @@ def add_todo():
 
 @app.get('/todos')
 def get_tasks():
-    # Placeholder for fetching todos from the database
+    if conn is None:
+        return jsonify({"error": "Database connection not available"}), 500
     with conn.cursor() as cur:
         cur.execute("SELECT id, task, completed FROM todos;")
         rows = cur.fetchall()
@@ -41,6 +45,8 @@ def get_tasks():
 
 @app.patch('/todos/<int:todo_id>')
 def update_todo(todo_id:int):
+    if conn is None:
+        return jsonify({"error": "Database connection not available"}), 500
     body =  request.get_json()
     print("BODY: ",body.get("completed"))
     state = body.get("completed")
@@ -51,7 +57,8 @@ def update_todo(todo_id:int):
 
 @app.delete('/todos/<int:todo_id>')
 def delete_todo(todo_id):
-    # Placeholder for deleting a todo from the database
+    if conn is None:
+        return jsonify({"error": "Database connection not available"}), 500
     print(f"Deleting todo with ID: {todo_id}")
     with conn.cursor() as cur:
         cur.execute("DELETE FROM todos WHERE id = %s", (todo_id,))
