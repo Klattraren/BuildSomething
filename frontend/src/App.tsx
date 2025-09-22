@@ -14,6 +14,10 @@ function App() {
     setTaskText(""); // clear input after adding
   };
 
+  const deleteCheckbox = (id) => {
+    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id));
+  };
+
   return (
     <div>
       <div id="title">
@@ -30,10 +34,15 @@ function App() {
       </div>
 
 
-     <div>
+     
+      <div>
         <hr style={{ width: "80vw" }} />
         {checkboxes.map((checkbox) => (
-          <CheckboxCustom key={checkbox.id} text={checkbox.text} />
+          <CheckboxCustom 
+            key={checkbox.id} 
+            text={checkbox.text} 
+            onDelete={() => deleteCheckbox(checkbox.id)} // pass delete function
+          />
         ))}
       </div>
     </div>
