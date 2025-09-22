@@ -8,7 +8,7 @@ CORS(app)
 conn = None
 try:
     conn = psycopg2.connect(
-        host="postgres",  # changed from localhost to postgres (service/container name)
+        host="postgres",
         database="default",
         user="postgres",
         password="postgres",
