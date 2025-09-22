@@ -18,31 +18,57 @@ function App() {
     });
     const data = await response.json();
     console.log(data);
+    return data;
   }
 
-  const addCheckbox = () => {
+
+
+  const addCheckbox = async () => {
     if (taskText.trim() === "") return; // prevent empty tasks
-    const new_id = postTask(taskText);
-    setCheckboxes([...checkboxes, { id: new_id, text: taskText, created: true}]);
+    const data = await postTask(taskText);
+    setCheckboxes([...checkboxes, { id: data.id, text: taskText, created: true}]);
     setTaskText(""); // clear input after adding
-    console.log("Added task:", taskText);
-    console.log("Assigned id:", id);
+    console.log(`Added task: ${taskText}, with id: ${data.id}`);
   };
 
-  const deleteCheckbox = (id) => {
-    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id));
-    console.log("Deleted checkbox with id:", id);
+
+
+
+  const deleteCheckbox = async (todoId) => {
+    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== todoId));
+    console.log("Deleted checkbox with id:", todoId);
+
+    try {
+      const response = await fetch(`http://localhost:5000/todos/${todoId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        console.error("Failed to delete todo:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
   };
 
   const getAllTasksOnLoad = async () => {
     const response = await fetch(`http://localhost:5000/todos`);
     const data = await response.json();
-    console.log(data);
-  }
+    console.log("Fetched tasks on load:", data);
+    // set all at once, not in a loop
+    setCheckboxes(data.map(item => ({
+      id: item.id,
+      text: item.task,
+      created: true
+    })));
+  };
 
   useEffect(() => {
     getAllTasksOnLoad();
   }, []);
+
+
+
 
   return (
     <div>
