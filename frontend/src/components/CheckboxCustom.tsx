@@ -1,16 +1,15 @@
 import "./CheckboxCustom.css";
 
-const CheckboxCustom = ({ text, onDelete}) => {
-    const updateTask = async () => {
-      const response = await fetch(`http://localhost:5000/todos/${todoId}`, {
-          method: "PATCH"
-      });
-      const data = await response.json();
-      console.log(data);
-    }
+const CheckboxCustom = ({text, onDelete}) => {
+    // const updateTask = async () => {
+    //   const response = await fetch(`http://localhost:5000/todos/${todoId}`, {
+    //       method: "PATCH"
+    //   });
+    //   const data = await response.json();
+    //   console.log(data);
+    // }
 
     const handleCheckboxChange = (box) => {
-      updateTask();
       console.log("Checkbox is now:", box.target.checked);
     }
     

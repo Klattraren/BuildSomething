@@ -8,14 +8,29 @@ function App() {
   const [checkboxes, setCheckboxes] = useState([]);
   const [taskText, setTaskText] = useState("");
 
+   const postTask = async (newTask) => {
+    const response = await fetch(`http://localhost:5000/todos`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newTask)
+    });
+    const data = await response.json();
+    console.log(data);
+  }
+
   const addCheckbox = () => {
     if (taskText.trim() === "") return; // prevent empty tasks
-    setCheckboxes([...checkboxes, { id: checkboxes.length, text: taskText }]);
+    setCheckboxes([...checkboxes, { id: checkboxes.length, text: taskText, created: true}]);
     setTaskText(""); // clear input after adding
+    console.log("Added task:", taskText);
+    postTask(taskText);
   };
 
   const deleteCheckbox = (id) => {
     setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id));
+    console.log("Deleted checkbox with id:", id);
   };
 
   return (
