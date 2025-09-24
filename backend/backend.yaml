@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
       - name: backend
-        image: backend:latest
+        image: epicaracde/backend:latest
         ports:
-        - containerPort: 8000
+        - containerPort: 5000
 ---
 apiVersion: v1
 kind: Service
@@ -27,6 +27,6 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 8000
-      targetPort: 8000
+      port: 5000
+      targetPort: 5000
   type: ClusterIP

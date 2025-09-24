@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import "./CheckboxCustom.scss";
+import { API_HOST } from "../config";
 
 type CheckboxProps = {
   text: string;
@@ -13,7 +14,7 @@ const CheckboxCustom = ({text, onDelete, taskId,completed}:CheckboxProps) => {
     const handleCheckboxChange = async (box:ChangeEvent<HTMLInputElement>) => {
       const newState = box.target.checked;
       setIsChecked(newState)
-      await fetch(`http://localhost:5000/todos/${taskId}`, {
+      await fetch(`${API_HOST}/todos/${taskId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"

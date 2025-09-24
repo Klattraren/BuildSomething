@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.scss'
 import CheckboxCustom from './components/CheckboxCustom'
 import "./components/AddTask.scss"
+import { API_HOST } from './config'
 
 type TaskType = {
   id: number;
@@ -14,7 +15,7 @@ function App() {
   const [taskText, setTaskText] = useState("");
 
    const postTask = async (newTask:string) => {
-    const response = await fetch(`http://localhost:5000/todos`, {
+    const response = await fetch(`${API_HOST}/todos`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -41,7 +42,7 @@ function App() {
     console.log("Deleted checkbox with id:", todoId);
 
     try {
-      const response = await fetch(`http://localhost:5000/todos/${todoId}`, {
+      const response = await fetch(`${API_HOST}/todos/${todoId}`, {
         method: "DELETE",
       });
 
@@ -54,7 +55,7 @@ function App() {
   };
 
   const getAllTasksOnLoad = async () => {
-    const response = await fetch(`http://localhost:5000/todos`);
+    const response = await fetch(`${API_HOST}/todos`);
     const data:TaskType[] = await response.json();
     console.log("Fetched tasks on load:", data);
     setCheckboxes(data);

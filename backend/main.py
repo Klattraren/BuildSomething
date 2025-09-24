@@ -18,7 +18,7 @@ try:
 except Exception as e:
     print("Connection failed:", e)
 
-@app.post('/todos')
+@app.post('/api/todos')
 def add_todo():
     if conn is None:
         return jsonify({"error": "Database connection not available"}), 500
@@ -31,7 +31,7 @@ def add_todo():
     print("Inserted new todo with ID:", new_id)
     return jsonify({"id": new_id}), 200
 
-@app.get('/todos')
+@app.get('/api/todos')
 def get_tasks():
     if conn is None:
         return jsonify({"error": "Database connection not available"}), 500
@@ -43,7 +43,7 @@ def get_tasks():
     return jsonify(response),200
 
 
-@app.patch('/todos/<int:todo_id>')
+@app.patch('/api/todos/<int:todo_id>')
 def update_todo(todo_id:int):
     if conn is None:
         return jsonify({"error": "Database connection not available"}), 500
@@ -51,11 +51,11 @@ def update_todo(todo_id:int):
     print("BODY: ",body.get("completed"))
     state = body.get("completed")
     with conn.cursor() as cur:
-        cur.execute(f"UPDATE todos SET completed={state} WHERE id={todo_id};")
+        cur.execute("UPDATE todos SET completed=%s WHERE id=%s;", (state, todo_id))
         conn.commit()
     return jsonify({"success":True}),200
 
-@app.delete('/todos/<int:todo_id>')
+@app.delete('/api/todos/<int:todo_id>')
 def delete_todo(todo_id):
     if conn is None:
         return jsonify({"error": "Database connection not available"}), 500
