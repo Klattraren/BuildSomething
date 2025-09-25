@@ -24,3 +24,6 @@ ha-cluster: diable
 dns: enable
 ingress: enabled
 hostpath-storage: enable
+
+# DEMO
+Youtube: https://youtu.be/BnusLmwUZsk
