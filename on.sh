@@ -18,3 +18,10 @@ echo
 echo "🔹 Starting Frontend..."
 microk8s kubectl apply -f $FRONTEND_FILE
 microk8s kubectl rollout status deployment/postgres --timeout=2s
+echo
+
+echo "🔹 Starting Ingress..."
+microk8s kubectl apply -f ingress.yaml
+echo
+
+echo "All services started successfully!"
